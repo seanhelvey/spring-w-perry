@@ -23,25 +23,19 @@ public class MathControllerTest {
     //Note naming convention when_given_then
     @Test
     public void volume_withAllZeroes_returnZero() throws Exception {
-        // given
-        int x = 0, y = 0, z = 0;
-        String url = "/" + x + "/" + y + "/" + z;
-        int sum = x * y * z;
-
-        // when
-        this.mvc.perform(get(url).accept(MediaType.TEXT_PLAIN))
+        // given, when
+        ResultActions result = callVolume(0, 0, 0);
 
          //then
+        result
             .andExpect(status().isOk())
-            .andExpect(content().string(String.valueOf(sum)));
+            .andExpect(content().string(String.valueOf(0)));
     }
 
     //Note naming convention when_given_then
     @Test
-    public void volume_withNonZeroValues_returnSum() throws Exception {
-        // given
-
-        // when
+    public void volume_withNonZeroValues_returnProduct() throws Exception {
+        // given, when
         ResultActions result = callVolume(1, 2, 3);
 
         //then
@@ -53,6 +47,23 @@ public class MathControllerTest {
     private ResultActions callVolume(int x, int y, int z) throws Exception {
         String url = "/" + x + "/" + y + "/" + z;
         return this.mvc.perform(get(url).accept(MediaType.TEXT_PLAIN));
+    }
+
+    @Test
+    public void sum_withNonZeroValues_returnSum() throws Exception {
+        // given, when
+        this.mvc.perform(get("/math/sum?n=1&m=2"))
+            .andExpect(status().isOk())
+            .andExpect(content().string("3"));
+    }
+
+    //Note naming convention when_given_then
+    @Test
+    public void getTasks_withTwoTasks_returnsSortByAndOwner() throws Exception {
+        // given, when
+        this.mvc.perform(get("/tasks?sortBy=title&owner=Chloe HTTP/1.1").accept(MediaType.TEXT_PLAIN))
+            .andExpect(status().isOk())
+            .andExpect(content().string("sort-by is title; owner is Chloe HTTP/1.1"));
     }
 
 }
